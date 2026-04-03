@@ -84,7 +84,6 @@
       display: grid;
       grid-template-columns: 220px 1fr;
       gap: 0;
-      min-height: 100vh;
     }
 
     /* --- TOC Sidebar --- */
@@ -93,7 +92,8 @@
       padding: 2rem 1rem 2rem 2rem;
       position: sticky;
       top: 0;
-      height: 100vh;
+      align-self: start;
+      max-height: 100vh;
       overflow-y: auto;
     }
     .toc-sidebar h4 {
@@ -162,6 +162,7 @@
     }
 
     /* ===== SECTIONS ===== */
+    section:first-child { padding: 1.5rem 0 2rem; }
     section { padding: 3rem 0 2rem; }
     section + section { border-top: 1px solid var(--sand); }
 
