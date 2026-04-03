@@ -419,7 +419,8 @@
         <a href="#ch4">4. Intelligence Hub</a>
         <a href="#ch5">5. Connecting Tools</a>
         <a href="#ch6">6. Automated Intel</a>
-        <a href="#ch7">7. The Walk-Through</a>
+        <a href="#ch7">7. Skills + Agents</a>
+        <a href="#ch8">8. The Walk-Through</a>
       </nav>
     </aside>
 
@@ -451,7 +452,7 @@
 
         <div class="stats">
           <div class="stat"><div class="stat-num">~2h</div><div class="stat-label">Initial Setup</div></div>
-          <div class="stat"><div class="stat-num">7</div><div class="stat-label">Chapters</div></div>
+          <div class="stat"><div class="stat-num">8</div><div class="stat-label">Chapters</div></div>
           <div class="stat"><div class="stat-num">30m</div><div class="stat-label">Weekly Upkeep</div></div>
         </div>
 
@@ -851,12 +852,115 @@ crontab -e
       </section>
 
       <!-- ============================================================ -->
-      <!-- CHAPTER 7: THE WALK-THROUGH                                   -->
+      <!-- CHAPTER 7: SKILLS, AGENTS & THE LEARNING LOOP                 -->
       <!-- ============================================================ -->
       <section id="ch7">
-        <h2><span class="ch-num">Chapter 7</span> The Walk-Through</h2>
+        <h2><span class="ch-num">Chapter 7</span> Skills, Agents &amp; the Learning Loop</h2>
 
-        <p>Checklist for our call. ~2 hours total.</p>
+        <p>This is where the system stops being a static setup and starts improving itself. Three concepts: <strong>skills</strong> (reusable prompts), <strong>agents</strong> (subprocesses with their own context), and the <strong>learning loop</strong> (the AI gets better from your corrections).</p>
+
+        <h3>Skills — why and when</h3>
+        <p>A skill is a reusable prompt that triggers on keywords. Instead of typing the same complex instruction every time, you write it once and it fires automatically.</p>
+
+        <table class="ref-table">
+          <thead><tr><th>You Say</th><th>Skill Fires</th><th>What It Does</th></tr></thead>
+          <tbody>
+            <tr><td>"weekly digest"</td><td>weekly-digest</td><td>Reads intel hub, generates team summary</td></tr>
+            <tr><td>"draft email to [name]"</td><td>draft-email</td><td>Loads your writing style + communication rules, drafts email</td></tr>
+            <tr><td>"meeting prep for [topic]"</td><td>meeting-prep</td><td>Pulls relevant intel hub files, generates briefing doc</td></tr>
+            <tr><td>"blocker report"</td><td>blocker-report</td><td>Scans team-status.md for red/yellow items, surfaces them</td></tr>
+          </tbody>
+        </table>
+
+        <h4>How to pick what becomes a skill</h4>
+        <p>If you've typed the same kind of request 3+ times, it's a skill. The test: "Would I explain this the same way to a new hire?" If yes, write it down once and let the AI reuse it.</p>
+
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>.claude/skills/weekly-digest/SKILL.md</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>---
+name: weekly-digest
+description: |
+  Generate weekly team status digest from intelligence hub files.
+  Use when: "weekly digest", "team status", "what happened this week".
+---
+
+# Weekly Digest
+
+1. Read intelligence-hub/team-status.md
+2. Read intelligence-hub/slack-digest.md
+3. Read intelligence-hub/decisions.md
+4. Read any meeting notes from past 7 days
+5. Generate summary: Highlights, Blockers, Decisions, Action Items</pre>
+        </div>
+
+        <h3>Agents — why a research agent matters</h3>
+        <p>Your main conversation has a finite context window. Long research pollutes it &mdash; you burn tokens on investigation and have less room for the actual work. An agent is a subprocess with its <em>own</em> context window. It does the research, synthesizes a brief, and returns just the result.</p>
+
+        <h4>When to use an agent vs. asking directly</h4>
+        <table class="ref-table">
+          <thead><tr><th>Situation</th><th>Approach</th></tr></thead>
+          <tbody>
+            <tr><td>Quick factual question</td><td>Ask Claude directly</td></tr>
+            <tr><td>Need 3+ sources compared</td><td>Research agent</td></tr>
+            <tr><td>Need current web data</td><td>Research agent (can search the web)</td></tr>
+            <tr><td>Building a recommendation or case</td><td>Research agent</td></tr>
+            <tr><td>Parallel independent tasks</td><td>Multiple agents (each gets own context)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>.claude/agents/deep-research.md</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>---
+name: deep-research
+description: Research agent — investigates a topic across multiple sources,
+  returns a synthesized brief with citations.
+model: opus
+maxTurns: 25
+---
+
+# Deep Research Agent
+
+1. Take the research question
+2. Search web, read documents, query APIs
+3. Cross-reference multiple sources
+4. Produce brief: Key Findings, Analysis, Recommendations, Sources
+5. Return brief to main session</pre>
+        </div>
+
+        <h3>The learning loop</h3>
+        <p>This is what makes the system compound over time instead of staying flat.</p>
+        <ol>
+          <li><strong>You correct the AI</strong> &mdash; "don't use passive voice in emails" or "always check team-status.md before recommending priorities"</li>
+          <li><strong>The AI stores the correction</strong> &mdash; in its memory system, persisted between sessions</li>
+          <li><strong>Next session it applies it</strong> &mdash; without you repeating yourself</li>
+          <li><strong>You review periodically</strong> &mdash; a <code>/reflect</code> command surfaces stored corrections so you can promote them to permanent brain file rules</li>
+        </ol>
+        <p>The brain file is manual. The learning loop is automatic. Together, the AI gets measurably better every week you use it. My workspace has 918 logged corrections that turned into rules, skills, and routing changes over 5 months.</p>
+
+        <p class="note"><strong>Start simple.</strong> You don't need skills or agents on day one. Use the brain file and intelligence hub for a few weeks. When you notice yourself repeating instructions, that's when you write a skill. When research starts eating your context, that's when you spawn an agent.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 8: THE WALK-THROUGH                                   -->
+      <!-- ============================================================ -->
+      <section id="ch8">
+        <h2><span class="ch-num">Chapter 8</span> The Walk-Through</h2>
+
+        <p>Checklist for our call. ~2 hours total. Start by forking the template repo:</p>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>gh repo create my-workspace --template HR-AR/ai-workspace-starter --private --clone
+cd my-workspace</pre>
+        </div>
 
         <div class="decision-tree">
           <p><strong>Step 1: Install Claude Code CLI</strong></p>
@@ -956,7 +1060,8 @@ gh repo create work-hub --private --source=. --push</pre>
 
   <!-- ===== FOOTER ===== -->
   <footer>
-    Made by Hakeem. Private guide &mdash; not for distribution. |
+    Made by Hakeem. |
+    <a href="https://github.com/HR-AR/ai-workspace-starter" target="_blank">Starter Template Repo</a> |
     <a href="https://hr-ar.github.io/claude-code-brain-file-guide/" target="_blank">Brain File Guide</a> |
     <a href="https://hr-ar.github.io/rashid-ai-masterclass/" target="_blank">AI Masterclass</a>
   </footer>
