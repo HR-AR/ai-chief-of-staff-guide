@@ -436,25 +436,18 @@
       <section id="ch1">
         <h2><span class="ch-num">Chapter 1</span> The Architecture</h2>
 
-        <p>You've tried AI a few times. Downloaded a tool, used it for a week, forgot about it when the next thing came out. I had the same cycle until I realized the problem wasn't the tool. It was starting from scratch every single time.</p>
-
-        <p>Here's the mental model that changed everything for me.</p>
+        <p>Every AI setup you've tried fails for one reason: no persistent context. Each session starts from zero. The fix is three things working together:</p>
 
         <div class="formula">
           <span>Folder Structure</span> + Brain File + <span>Intelligence Hub</span> = Persistent AI Workspace
         </div>
 
         <h3>LLM vs. Wrapper</h3>
-        <p>The LLM (Claude, GPT, Gemini) is the brain. It reasons, writes, and analyzes. But on its own it has no memory, no access to your tools, and no idea who you are.</p>
-        <p>The <strong>wrapper</strong> is the body. Claude Code, Cursor, Windsurf, even a chat window in a browser &mdash; these are all wrappers around the same underlying LLM. The wrapper gives the brain access to your files, your terminal, your APIs. Different wrapper, different capabilities. Same brain.</p>
-        <p>At my company, the engineering team runs an instance called "Code Puppy" &mdash; it's the same Claude model, but wrapped in a work-specific context with access to Confluence, Jira, and internal documentation. I run my own instance with access to Slack, meeting transcripts, and team intelligence files. Same LLM. Completely different capabilities, because the <em>wrapper and context</em> are different.</p>
+        <p>The LLM (Claude, GPT, Gemini) is the brain &mdash; no memory, no tool access, no idea who you are. The <strong>wrapper</strong> (Claude Code, Cursor, Windsurf) gives the brain access to your files, terminal, and APIs. Same brain, different wrapper = different capabilities.</p>
+        <p>At my company, teams run "Code Puppy" &mdash; same Claude model, wrapped with access to Confluence and Jira. I run my own with Slack and meeting transcripts. The value is in the workspace structure, not the model. Set it up right and you can swap Claude for GPT or Gemini.</p>
 
-        <p class="note"><strong>Key insight:</strong> You're not "using Claude." You're building a workspace that any LLM can operate within. If you set up the workspace right, you can swap Claude for GPT or Gemini and it still works. The value is in the structure, not the model.</p>
-
-        <h3>Why setups fail</h3>
-        <p>Most people open a chat window, ask a question, and get a generic answer. Next session, the AI has no memory of the previous conversation. So they lose interest.</p>
-        <p>The fix is persistent context. A file that sits in your project root and tells the AI who you are, what you manage, and how you think. Every session after that starts differently &mdash; the AI already knows your team, your priorities, and your preferences.</p>
-        <p>That file is called a <strong>brain file</strong>. Combined with an <strong>intelligence hub</strong> (a folder of reference files the AI reads before answering) and <strong>cron jobs</strong> (scheduled tasks that pull data without you asking), you get a system that compounds. The more you use it, the smarter it gets.</p>
+        <h3>Why this works</h3>
+        <p>A <strong>brain file</strong> teaches the AI who you are at session start. An <strong>intelligence hub</strong> gives it reference files to read before answering. <strong>Cron jobs</strong> pull fresh data without you asking. The system compounds &mdash; more use, better output.</p>
 
         <div class="stats">
           <div class="stat"><div class="stat-num">~2h</div><div class="stat-label">Initial Setup</div></div>
@@ -462,16 +455,7 @@
           <div class="stat"><div class="stat-num">30m</div><div class="stat-label">Weekly Upkeep</div></div>
         </div>
 
-        <h3>What you'll have at the end</h3>
-        <ul>
-          <li>A version-controlled workspace organized for your 16-person international team</li>
-          <li>A brain file that teaches the AI your team structure, priorities, and decision-making context</li>
-          <li>An intelligence hub that aggregates Slack, meeting notes, and status updates into one folder</li>
-          <li>MCP connections pulling data from your actual tools (Slack, calendar, project tracking)</li>
-          <li>Cron jobs that refresh your intelligence automatically &mdash; daily, weekly, or on-demand</li>
-        </ul>
-
-        <p class="muted">I built two other guides at different levels if you want more depth on any topic: a <a href="https://hr-ar.github.io/claude-code-brain-file-guide/" target="_blank">beginner brain file guide</a> and a <a href="https://hr-ar.github.io/rashid-ai-masterclass/" target="_blank">full masterclass</a> (written for my sister and mom, so the metaphors are different, but the system is the same).</p>
+        <p class="muted">More depth: <a href="https://hr-ar.github.io/claude-code-brain-file-guide/" target="_blank">beginner brain file guide</a> | <a href="https://hr-ar.github.io/rashid-ai-masterclass/" target="_blank">full masterclass</a></p>
       </section>
 
       <!-- ============================================================ -->
@@ -480,10 +464,7 @@
       <section id="ch2">
         <h2><span class="ch-num">Chapter 2</span> Git + Folder Organization</h2>
 
-        <p>Everything starts with a folder. Not a fancy tool, not a subscription. A folder on your computer that you version-control with Git.</p>
-
-        <h3>Why Git for a non-code workspace</h3>
-        <p>You know Git from engineering. Here you're using it for the same reason &mdash; you want a history of changes, the ability to roll back, and a remote backup on GitHub. The difference is you're tracking markdown documents, team status files, and intelligence reports instead of source code.</p>
+        <p>Git gives you version history, rollback, and remote backup for markdown documents and intelligence files instead of source code.</p>
 
         <h3>One-time setup</h3>
         <div class="prompt-wrap">
@@ -497,10 +478,8 @@ gh repo create work-hub --private --source=. --push</pre>
         </div>
 
         <h3>Folder organization &mdash; pick your style</h3>
-        <p>There are three solid patterns. Pick whichever maps to how you think.</p>
 
         <h4>Option A: PARA Method (what I use)</h4>
-        <p>Tiago Forte's system. Four top-level folders. Everything has exactly one home.</p>
         <div class="prompt-wrap">
           <div class="prompt-header">
             <span>folder structure</span>
@@ -518,7 +497,6 @@ gh repo create work-hub --private --source=. --push</pre>
         <p class="note"><strong>My workspace has 39 intelligence files, 66 custom skills, and 17 AI agents.</strong> It started with exactly this structure and five empty folders. Start simple.</p>
 
         <h4>Option B: Domain-First</h4>
-        <p>Organized by team, country, or business function. Good if your 16 people break cleanly into groups.</p>
         <div class="prompt-wrap">
           <div class="prompt-header">
             <span>folder structure</span>
@@ -534,7 +512,6 @@ gh repo create work-hub --private --source=. --push</pre>
         </div>
 
         <h4>Option C: Timeline-First</h4>
-        <p>Organized by quarter or sprint. Good if your work is heavily deadline-driven.</p>
         <div class="prompt-wrap">
           <div class="prompt-header">
             <span>folder structure</span>
@@ -550,7 +527,7 @@ gh repo create work-hub --private --source=. --push</pre>
   CLAUDE.md</pre>
         </div>
 
-        <p>Whichever you pick, the key rule: <strong>the parent folder is the workspace root.</strong> The AI will read everything from that root down. So whatever is the top-level folder, build everything inside it.</p>
+        <p class="note"><strong>Key rule:</strong> The parent folder is the workspace root. The AI reads everything from that root down.</p>
 
         <h3>The .gitignore</h3>
         <div class="prompt-wrap">
@@ -581,9 +558,7 @@ node_modules/</pre>
       <section id="ch3">
         <h2><span class="ch-num">Chapter 3</span> The Brain File</h2>
 
-        <p>This is the file that makes the AI stop being generic. It sits at the root of your workspace and the AI reads it at the start of every session.</p>
-
-        <p>In Claude Code, this file is called <code>CLAUDE.md</code>. In Cursor, it's <code>.cursorrules</code>. In Windsurf, it's <code>.windsurfrules</code>. Different wrappers, same concept.</p>
+        <p>Sits at workspace root. AI reads it every session. Claude Code calls it <code>CLAUDE.md</code>, Cursor uses <code>.cursorrules</code>, Windsurf uses <code>.windsurfrules</code>.</p>
 
         <h3>What goes in it</h3>
         <ul>
@@ -635,9 +610,7 @@ When answering questions, check `intelligence-hub/` first:
         </div>
 
         <h3>How it grows</h3>
-        <p>Start with 20 lines. Add things as you work. When the AI gets something wrong, add a rule to the brain file so it doesn't happen again. My brain file started at 20 lines. It's now 163 lines of core instructions plus 500+ lines of identity, skills, and routing rules.</p>
-
-        <p>Don't write it by hand if you don't want to. You can paste this into Claude Code:</p>
+        <p>Start at 20 lines. When the AI gets something wrong, add a rule. Mine is now 163 lines core + 500 lines of skills and routing. Or let Claude build it for you:</p>
         <div class="prompt-wrap">
           <div class="prompt-header">
             <span>prompt</span>
@@ -662,14 +635,11 @@ When answering questions, check `intelligence-hub/` first:
       <section id="ch4">
         <h2><span class="ch-num">Chapter 4</span> The Intelligence Hub</h2>
 
-        <p>This is the concept that ties everything together. A single folder that the AI reads before making any recommendation or decision.</p>
+        <p>A single folder the AI reads before making any recommendation. Synthesized summaries, not raw data.</p>
 
         <div class="formula">
           <span>intelligence-hub/</span> = your team's ground truth
         </div>
-
-        <h3>What goes in it</h3>
-        <p>Reference files that represent the current state of your world. Not every email or Slack message &mdash; synthesized summaries that the AI can read quickly.</p>
 
         <table class="ref-table">
           <thead><tr><th>File</th><th>What It Contains</th><th>Update Frequency</th></tr></thead>
@@ -684,7 +654,7 @@ When answering questions, check `intelligence-hub/` first:
         </table>
 
         <h3>Auto-query routing</h3>
-        <p>In your brain file (Chapter 3), you add routing rules that tell the AI which file to read based on the question type. When you ask "what's the team working on?" it goes to <code>team-status.md</code>. When you ask "why did we decide to do X?" it goes to <code>decisions.md</code>.</p>
+        <p>Add routing rules to your brain file &mdash; the AI reads the right file based on question type.</p>
 
         <details>
           <summary>Example routing rule (from my CLAUDE.md)</summary>
@@ -711,10 +681,9 @@ When answering questions, check intelligence-hub/ FIRST:
         </details>
 
         <h3>Project-level context override</h3>
-        <p>You can also put a smaller brain file inside individual project folders. When you're working inside that project, the AI prioritizes the project-level context over the global one. So a project for "Brazil market expansion" can have its own CLAUDE.md that says "when answering questions in this folder, focus on intelligence-hub/country-context/brazil.md and ignore the global team status."</p>
+        <p>Put a smaller brain file inside individual project folders. "Brazil market expansion" gets its own CLAUDE.md pointing to <code>intelligence-hub/country-context/brazil.md</code> instead of global team status.</p>
 
         <h3>Start with five files</h3>
-        <p>Don't try to build a 39-file intelligence hub on day one. Start with:</p>
         <ol>
           <li><code>team-status.md</code> &mdash; one paragraph per person, updated weekly</li>
           <li><code>decisions.md</code> &mdash; a running log of decisions with dates and rationale</li>
@@ -722,10 +691,8 @@ When answering questions, check intelligence-hub/ FIRST:
           <li><code>meeting-notes/</code> &mdash; a folder for important meeting summaries</li>
           <li><code>slack-digest.md</code> &mdash; a weekly summary of important Slack activity</li>
         </ol>
-        <p>That's it. Five files. The AI now has enough context to give you non-generic answers about your team.</p>
-
         <h3>NotebookLM as a research engine</h3>
-        <p><a href="https://notebooklm.google.com" target="_blank">NotebookLM</a> (free from Google) is a second layer. Upload your intelligence hub files, meeting transcripts, or any reference material, and it gives you citation-backed answers without consuming your AI's context window. Think of it as a research library the AI can query when it needs deeper context.</p>
+        <p><a href="https://notebooklm.google.com" target="_blank">NotebookLM</a> (free, Google) &mdash; upload intelligence hub files, get citation-backed answers without consuming the AI's context window.</p>
       </section>
 
       <!-- ============================================================ -->
@@ -734,12 +701,9 @@ When answering questions, check intelligence-hub/ FIRST:
       <section id="ch5">
         <h2><span class="ch-num">Chapter 5</span> Connecting Your Tools</h2>
 
-        <p>Your intelligence hub is only as good as the data flowing into it. This chapter covers how to connect the AI to the tools your team actually uses.</p>
+        <p>MCP (Model Context Protocol) is an open standard that lets AI models talk to external tools. If a tool has an MCP server, Claude Code can read from and write to it directly.</p>
 
-        <h3>What's an MCP</h3>
-        <p>MCP (Model Context Protocol) is an open standard that lets AI models talk to external tools. Think of it as USB for AI &mdash; a universal connector. If a tool has an MCP server, you can plug it into Claude Code and the AI can read from (and sometimes write to) that tool directly.</p>
-
-        <h3>Available MCPs to explore</h3>
+        <h3>Available MCPs</h3>
         <table class="ref-table">
           <thead><tr><th>Tool Category</th><th>MCP Server</th><th>What It Does</th></tr></thead>
           <tbody>
@@ -767,25 +731,15 @@ claude mcp add google-workspace npx -y google-workspace-mcp</pre>
         <p class="note"><strong>Where to find MCPs:</strong> <a href="https://github.com/modelcontextprotocol/servers" target="_blank">github.com/modelcontextprotocol/servers</a> has the official registry. Search for "[your tool] MCP server" and you'll usually find one.</p>
 
         <h3>CLI-Anything</h3>
-        <p>Here's the trick that opens everything up: any command-line tool can become an AI capability. If a tool has a CLI, the AI can call it.</p>
-        <ul>
-          <li>Your project tracker has a CLI? The AI can check ticket status.</li>
-          <li>Your company uses a custom deploy tool? The AI can trigger deploys.</li>
-          <li>You use <code>curl</code> to hit internal APIs? The AI can do that too.</li>
-        </ul>
-        <p>You don't need to wait for someone to build an MCP. If it runs in the terminal, Claude Code can run it.</p>
+        <p>No MCP? If it has a CLI, Claude Code can run it. Project tracker CLI, deploy tools, <code>curl</code> to internal APIs &mdash; all work.</p>
 
         <h3>Meeting transcripts</h3>
-        <p>Meeting transcripts are one of the highest-value data sources for your intelligence hub. Several tools can capture and make them searchable:</p>
         <ul>
-          <li><strong>Otter.ai</strong> &mdash; software-based, integrates with Zoom/Teams/Meet</li>
-          <li><strong>Fireflies.ai</strong> &mdash; meeting bot, auto-joins calls, transcribes and summarizes</li>
-          <li><strong>Built-in transcription</strong> &mdash; Teams, Zoom, and Meet all have native transcription now</li>
+          <li><strong>Otter.ai</strong> &mdash; integrates with Zoom/Teams/Meet</li>
+          <li><strong>Fireflies.ai</strong> &mdash; auto-joins calls, transcribes and summarizes</li>
+          <li><strong>Built-in</strong> &mdash; Teams, Zoom, and Meet all have native transcription</li>
         </ul>
-        <p>The pattern is the same regardless of tool: record, transcribe, pull into your intelligence hub, let the AI search and synthesize.</p>
-
-        <h3>Start with one connection</h3>
-        <p>Don't try to connect everything at once. Pick the tool where you lose the most context (usually Slack or meeting notes) and connect that first. Add more as you build the habit.</p>
+        <p>Pattern: record, transcribe, pull into intelligence hub, let AI search and synthesize.</p>
       </section>
 
       <!-- ============================================================ -->
@@ -794,11 +748,7 @@ claude mcp add google-workspace npx -y google-workspace-mcp</pre>
       <section id="ch6">
         <h2><span class="ch-num">Chapter 6</span> Automated Intelligence</h2>
 
-        <p>The intelligence hub is powerful when you update it manually. It becomes a force multiplier when the updates happen automatically.</p>
-
-        <h3>What's a cron job</h3>
-        <p>You know this from undergrad, but the quick version: a cron job is a scheduled task that runs at a set interval. On Mac/Linux, <code>crontab -e</code> opens the scheduler. On Windows, it's Task Scheduler.</p>
-        <p>Claude Code also has a built-in scheduler (<code>CronCreate</code>) that runs tasks within the AI session.</p>
+        <p>Manual intelligence hub is good. Automated is a force multiplier. <code>crontab -e</code> on Mac/Linux, Task Scheduler on Windows. Claude Code also has built-in <code>CronCreate</code>.</p>
 
         <h3>Patterns I run</h3>
         <table class="ref-table">
@@ -835,10 +785,10 @@ crontab -e
           <li><strong>Monthly country review</strong> &mdash; First of each month, generate a summary per country from the past 30 days</li>
         </ol>
 
-        <p class="note"><strong>Building blocks first, automation later.</strong> I used the manual version of all of this for months before automating anything. The automation makes it faster, but the value comes from the structure. Get the folders and brain file working, use it for a few weeks, then start adding crons when you see what's worth automating.</p>
+        <p class="note"><strong>Get the folders and brain file working first.</strong> Use it manually for a few weeks, then automate what's worth automating.</p>
 
         <h3>Remote triggers</h3>
-        <p>Claude Code can also run scheduled agents via "remote triggers" &mdash; tasks that fire on a cron schedule even when you're not in a session. This is the equivalent of having an AI assistant that checks things while you sleep.</p>
+        <p>Claude Code can run scheduled agents even when you're not in a session:</p>
         <div class="prompt-wrap">
           <div class="prompt-header">
             <span>terminal</span>
@@ -855,11 +805,11 @@ crontab -e
       <section id="ch7">
         <h2><span class="ch-num">Chapter 7</span> The Walk-Through</h2>
 
-        <p>This is the checklist for our call. We'll go through each step together. Estimated total: about 2 hours.</p>
+        <p>Checklist for our call. ~2 hours total.</p>
 
         <div class="decision-tree">
           <p><strong>Step 1: Install Claude Code CLI</strong></p>
-          <p>Requires Node.js first. Install from <a href="https://nodejs.org" target="_blank">nodejs.org</a>, then:</p>
+          <p>Requires <a href="https://nodejs.org" target="_blank">Node.js</a> first, then:</p>
         </div>
         <div class="prompt-wrap">
           <div class="prompt-header">
@@ -930,7 +880,7 @@ gh repo create work-hub --private --source=. --push</pre>
 
         <div class="decision-tree">
           <p><strong>Step 9: Iterate</strong></p>
-          <p>Use it for a week. Add rules to the brain file when the AI gets something wrong. Add files to the intelligence hub when you notice gaps. Connect more tools as you see the value. This system compounds &mdash; the more you feed it, the better it gets.</p>
+          <p>Use it for a week. Add rules when the AI gets something wrong. Add files when you notice gaps. It compounds.</p>
         </div>
 
         <h3>Quick reference</h3>
