@@ -464,7 +464,15 @@
       <section id="ch2">
         <h2><span class="ch-num">Chapter 2</span> Git + Folder Organization</h2>
 
-        <p>Git gives you version history, rollback, and remote backup for markdown documents and intelligence files instead of source code.</p>
+        <p>The repo IS the workspace. Not a code project &mdash; this is where your brain file, intelligence hub, meeting notes, cron scripts, and project folders all live. When you run <code>claude</code> from this folder, the AI reads everything in it.</p>
+
+        <p>Git gives you:</p>
+        <ul>
+          <li><strong>History</strong> &mdash; see how team status changed week over week, diff decisions over time</li>
+          <li><strong>Backup</strong> &mdash; GitHub is the remote. Laptop dies, nothing lost.</li>
+          <li><strong>Portability</strong> &mdash; clone on a new machine, run <code>claude</code>, same AI experience instantly</li>
+          <li><strong>Rollback</strong> &mdash; bad brain file rule breaks things? <code>git revert</code> and you're back</li>
+        </ul>
 
         <h3>One-time setup</h3>
         <div class="prompt-wrap">
