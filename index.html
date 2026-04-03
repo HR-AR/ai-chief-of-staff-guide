@@ -746,7 +746,7 @@ When answering questions, check intelligence-hub/ FIRST:
             <tr><td>Google Workspace</td><td><code>google-workspace</code></td><td>Read/write Gmail, Calendar, Drive, Sheets, Docs</td></tr>
             <tr><td>Slack</td><td><code>slack-mcp</code></td><td>Read channels, search messages, post updates</td></tr>
             <tr><td>Jira / Linear / Asana</td><td>Various</td><td>Read tickets, update status, create issues</td></tr>
-            <tr><td>Meeting transcripts</td><td><code>mcp-limitless</code></td><td>Search Limitless pendant recordings semantically</td></tr>
+            <tr><td>Meeting transcripts</td><td>Various</td><td>Search meeting recordings and transcripts</td></tr>
             <tr><td>Confluence / Notion</td><td>Various</td><td>Read/write knowledge base pages</td></tr>
             <tr><td>GitHub</td><td><code>mcp-github</code></td><td>Repos, issues, PRs, code search</td></tr>
           </tbody>
@@ -775,10 +775,9 @@ claude mcp add google-workspace npx -y google-workspace-mcp</pre>
         </ul>
         <p>You don't need to wait for someone to build an MCP. If it runs in the terminal, Claude Code can run it.</p>
 
-        <h3>Meeting transcripts: Limitless, Otter, Fireflies</h3>
-        <p>I use a <a href="https://limitless.ai" target="_blank">Limitless pendant</a> that records all my meetings and makes them searchable via API. But there are alternatives:</p>
+        <h3>Meeting transcripts</h3>
+        <p>Meeting transcripts are one of the highest-value data sources for your intelligence hub. Several tools can capture and make them searchable:</p>
         <ul>
-          <li><strong>Limitless</strong> &mdash; hardware pendant, always-on recording, API access, semantic search</li>
           <li><strong>Otter.ai</strong> &mdash; software-based, integrates with Zoom/Teams/Meet</li>
           <li><strong>Fireflies.ai</strong> &mdash; meeting bot, auto-joins calls, transcribes and summarizes</li>
           <li><strong>Built-in transcription</strong> &mdash; Teams, Zoom, and Meet all have native transcription now</li>
