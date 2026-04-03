@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chief of Staff &mdash; Setup Guide</title>
+  <meta name="description" content="Build a sustainable AI workspace that pulls information from your team, tracks decisions, and automates intelligence gathering." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #1a1a2e;
+      --navy-90: #1a1a2ef0;
+      --cyan:    #00d4ff;
+      --cyan-dim:#00d4ff22;
+      --cyan-mid:#00d4ff44;
+      --warm:    #f7f6f3;
+      --sand:    #eae7e0;
+      --text:    #2d2d2d;
+      --text-2:  #6b6b6b;
+      --text-3:  #999;
+      --red:     #e05252;
+      --green:   #2a9d6e;
+      --code-bg: #0d1117;
+      --code-fg: #c9d1d9;
+      --purple:  #a78bfa;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: var(--navy);
+      color: #fff;
+      padding: 4rem 2rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 span { color: var(--cyan); }
+    .hero p.subtitle {
+      font-size: 1.1rem;
+      color: #b0b0c0;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    /* ===== LAYOUT: SIDEBAR + CONTENT ===== */
+    .page-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 0;
+      min-height: 100vh;
+    }
+
+    /* --- TOC Sidebar --- */
+    .toc-sidebar {
+      border-right: 1px solid var(--sand);
+      padding: 2rem 1rem 2rem 2rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .toc-sidebar h4 {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-3);
+      margin-bottom: 1rem;
+    }
+    .toc-sidebar a {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .toc-sidebar a:hover { background: var(--warm); color: var(--text); }
+    .toc-sidebar a.active { background: var(--cyan-dim); color: var(--navy); font-weight: 600; }
+
+    /* --- Main Content --- */
+    .main-content {
+      padding: 0 2rem 4rem;
+      max-width: 720px;
+    }
+
+    /* --- Mobile hamburger --- */
+    .mobile-toc-toggle {
+      display: none;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--cyan);
+      border: 2px solid var(--cyan);
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      align-items: center;
+      justify-content: center;
+    }
+    .mobile-toc-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+    }
+    .mobile-toc-overlay.open { display: block; }
+    .toc-sidebar.mobile-open {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 280px;
+      background: #fff;
+      z-index: 160;
+      padding-top: 1.5rem;
+      box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+    }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 3rem 0 2rem; }
+    section + section { border-top: 1px solid var(--sand); }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--navy);
+    }
+    h2 .ch-num {
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.75rem;
+      color: var(--text);
+    }
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text);
+    }
+    p { margin-bottom: 1rem; color: var(--text); }
+    p.muted { color: var(--text-2); font-size: 0.95rem; }
+    p.note {
+      background: var(--warm);
+      border-left: 3px solid var(--cyan);
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    p.warning {
+      background: #fef2f2;
+      border-left: 3px solid var(--red);
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    ul, ol { margin: 0 0 1rem 1.5rem; font-size: 0.95rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: var(--warm);
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      color: var(--navy);
+    }
+    a { color: var(--navy); }
+
+    /* ===== PROMPT BLOCKS ===== */
+    .prompt-wrap {
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .prompt-header {
+      background: #161b22;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .prompt-header span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid #30363d;
+      color: var(--text-3);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .copy-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.65;
+      padding: 1.25rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ===== STATS ROW ===== */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--sand);
+      border: 1px solid var(--sand);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .stat {
+      background: #fff;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== FORMULA BOX ===== */
+    .formula {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      text-align: center;
+      margin: 1.5rem 0;
+      letter-spacing: 0.01em;
+    }
+    .formula span { color: var(--cyan); }
+
+    /* ===== TABLES ===== */
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    .ref-table th {
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .ref-table th:first-child { border-radius: 6px 0 0 0; }
+    .ref-table th:last-child { border-radius: 0 6px 0 0; }
+    .ref-table td {
+      padding: 0.55rem 0.85rem;
+      border-bottom: 1px solid var(--sand);
+    }
+    .ref-table tr:hover td { background: var(--warm); }
+
+    /* ===== DECISION TREE ===== */
+    .decision-tree {
+      background: var(--warm);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .decision-tree p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .decision-tree strong { color: var(--navy); }
+
+    /* ===== DETAILS (EXPANDABLE) ===== */
+    details {
+      background: var(--warm);
+      border-radius: 8px;
+      padding: 0;
+      margin: 1rem 0;
+    }
+    details summary {
+      padding: 0.85rem 1.25rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--navy);
+      list-style: none;
+    }
+    details summary::before {
+      content: '+ ';
+      color: var(--cyan);
+      font-weight: 700;
+    }
+    details[open] summary::before { content: '- '; }
+    details > div {
+      padding: 0 1.25rem 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-3);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--sand);
+    }
+    footer a { color: var(--cyan); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .toc-sidebar { display: none; }
+      .toc-sidebar.mobile-open { display: block; }
+      .mobile-toc-toggle { display: flex; }
+      .main-content { max-width: 100%; padding: 0 1.25rem 3rem; }
+      .hero { padding: 3rem 1.25rem 2rem; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-label">From Hakeem &mdash; The Full Setup</div>
+      <h1>Your AI <span>Chief of Staff</span></h1>
+      <p class="subtitle">A step-by-step guide to building an AI workspace that pulls information from your team, tracks decisions, and gets smarter every week. Built for the Saturday/Sunday walk-through.</p>
+    </div>
+  </header>
+
+  <!-- ===== PAGE LAYOUT ===== -->
+  <div class="page-layout">
+
+    <!-- --- TOC Sidebar --- -->
+    <aside class="toc-sidebar" id="tocSidebar">
+      <h4>Contents</h4>
+      <nav id="tocNav">
+        <a href="#ch1">1. The Architecture</a>
+        <a href="#ch2">2. Git + Folders</a>
+        <a href="#ch3">3. The Brain File</a>
+        <a href="#ch4">4. Intelligence Hub</a>
+        <a href="#ch5">5. Connecting Tools</a>
+        <a href="#ch6">6. Automated Intel</a>
+        <a href="#ch7">7. The Walk-Through</a>
+      </nav>
+    </aside>
+
+    <!-- --- Mobile TOC button --- -->
+    <button class="mobile-toc-toggle" id="mobileTocBtn" onclick="toggleMobileToc()" aria-label="Table of contents">&#9776;</button>
+    <div class="mobile-toc-overlay" id="mobileTocOverlay" onclick="toggleMobileToc()"></div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 1: THE ARCHITECTURE                                   -->
+      <!-- ============================================================ -->
+      <section id="ch1">
+        <h2><span class="ch-num">Chapter 1</span> The Architecture</h2>
+
+        <p>You've tried AI a few times. Downloaded a tool, used it for a week, forgot about it when the next thing came out. I had the same cycle until I realized the problem wasn't the tool. It was starting from scratch every single time.</p>
+
+        <p>Here's the mental model that changed everything for me.</p>
+
+        <div class="formula">
+          <span>Folder Structure</span> + Brain File + <span>Intelligence Hub</span> = Persistent AI Workspace
+        </div>
+
+        <h3>LLM vs. Wrapper</h3>
+        <p>The LLM (Claude, GPT, Gemini) is the brain. It reasons, writes, and analyzes. But on its own it has no memory, no access to your tools, and no idea who you are.</p>
+        <p>The <strong>wrapper</strong> is the body. Claude Code, Cursor, Windsurf, even a chat window in a browser &mdash; these are all wrappers around the same underlying LLM. The wrapper gives the brain access to your files, your terminal, your APIs. Different wrapper, different capabilities. Same brain.</p>
+        <p>At my company, the engineering team runs an instance called "Code Puppy" &mdash; it's the same Claude model, but wrapped in a work-specific context with access to Confluence, Jira, and internal documentation. I run my own instance with access to Slack, meeting transcripts, and team intelligence files. Same LLM. Completely different capabilities, because the <em>wrapper and context</em> are different.</p>
+
+        <p class="note"><strong>Key insight:</strong> You're not "using Claude." You're building a workspace that any LLM can operate within. If you set up the workspace right, you can swap Claude for GPT or Gemini and it still works. The value is in the structure, not the model.</p>
+
+        <h3>Why setups fail</h3>
+        <p>Most people open a chat window, ask a question, and get a generic answer. Next session, the AI has no memory of the previous conversation. So they lose interest.</p>
+        <p>The fix is persistent context. A file that sits in your project root and tells the AI who you are, what you manage, and how you think. Every session after that starts differently &mdash; the AI already knows your team, your priorities, and your preferences.</p>
+        <p>That file is called a <strong>brain file</strong>. Combined with an <strong>intelligence hub</strong> (a folder of reference files the AI reads before answering) and <strong>cron jobs</strong> (scheduled tasks that pull data without you asking), you get a system that compounds. The more you use it, the smarter it gets.</p>
+
+        <div class="stats">
+          <div class="stat"><div class="stat-num">~2h</div><div class="stat-label">Initial Setup</div></div>
+          <div class="stat"><div class="stat-num">7</div><div class="stat-label">Chapters</div></div>
+          <div class="stat"><div class="stat-num">30m</div><div class="stat-label">Weekly Upkeep</div></div>
+        </div>
+
+        <h3>What you'll have at the end</h3>
+        <ul>
+          <li>A version-controlled workspace organized for your 16-person international team</li>
+          <li>A brain file that teaches the AI your team structure, priorities, and decision-making context</li>
+          <li>An intelligence hub that aggregates Slack, meeting notes, and status updates into one folder</li>
+          <li>MCP connections pulling data from your actual tools (Slack, calendar, project tracking)</li>
+          <li>Cron jobs that refresh your intelligence automatically &mdash; daily, weekly, or on-demand</li>
+        </ul>
+
+        <p class="muted">I built two other guides at different levels if you want more depth on any topic: a <a href="https://hr-ar.github.io/claude-code-brain-file-guide/" target="_blank">beginner brain file guide</a> and a <a href="https://hr-ar.github.io/rashid-ai-masterclass/" target="_blank">full masterclass</a> (written for my sister and mom, so the metaphors are different, but the system is the same).</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 2: GIT + FOLDERS                                      -->
+      <!-- ============================================================ -->
+      <section id="ch2">
+        <h2><span class="ch-num">Chapter 2</span> Git + Folder Organization</h2>
+
+        <p>Everything starts with a folder. Not a fancy tool, not a subscription. A folder on your computer that you version-control with Git.</p>
+
+        <h3>Why Git for a non-code workspace</h3>
+        <p>You know Git from engineering. Here you're using it for the same reason &mdash; you want a history of changes, the ability to roll back, and a remote backup on GitHub. The difference is you're tracking markdown documents, team status files, and intelligence reports instead of source code.</p>
+
+        <h3>One-time setup</h3>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>mkdir ~/work-hub && cd ~/work-hub
+git init
+gh repo create work-hub --private --source=. --push</pre>
+        </div>
+
+        <h3>Folder organization &mdash; pick your style</h3>
+        <p>There are three solid patterns. Pick whichever maps to how you think.</p>
+
+        <h4>Option A: PARA Method (what I use)</h4>
+        <p>Tiago Forte's system. Four top-level folders. Everything has exactly one home.</p>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>folder structure</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>work-hub/
+  00-inbox/           # Quick capture, unprocessed items
+  01-projects/        # Active work with deadlines
+  02-areas/           # Ongoing responsibilities (teams, countries, functions)
+  03-resources/       # Reference (templates, intelligence-hub, scripts)
+  04-archive/         # Completed or inactive work
+  CLAUDE.md           # Your brain file (Chapter 3)
+  .gitignore</pre>
+        </div>
+        <p class="note"><strong>My workspace has 39 intelligence files, 66 custom skills, and 17 AI agents.</strong> It started with exactly this structure and five empty folders. Start simple.</p>
+
+        <h4>Option B: Domain-First</h4>
+        <p>Organized by team, country, or business function. Good if your 16 people break cleanly into groups.</p>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>folder structure</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>work-hub/
+  brazil-team/
+  india-team/
+  us-team/
+  shared-resources/
+  intelligence-hub/
+  CLAUDE.md</pre>
+        </div>
+
+        <h4>Option C: Timeline-First</h4>
+        <p>Organized by quarter or sprint. Good if your work is heavily deadline-driven.</p>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>folder structure</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>work-hub/
+  2026-Q2/
+    active-initiatives/
+    team-status/
+    decisions/
+  2026-Q1/
+  intelligence-hub/
+  CLAUDE.md</pre>
+        </div>
+
+        <p>Whichever you pick, the key rule: <strong>the parent folder is the workspace root.</strong> The AI will read everything from that root down. So whatever is the top-level folder, build everything inside it.</p>
+
+        <h3>The .gitignore</h3>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>.gitignore</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>.DS_Store
+.env
+*.key
+personal/
+node_modules/</pre>
+        </div>
+
+        <h3>First commit</h3>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>git add -A && git commit -m "Initial workspace structure" && git push</pre>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 3: THE BRAIN FILE                                     -->
+      <!-- ============================================================ -->
+      <section id="ch3">
+        <h2><span class="ch-num">Chapter 3</span> The Brain File</h2>
+
+        <p>This is the file that makes the AI stop being generic. It sits at the root of your workspace and the AI reads it at the start of every session.</p>
+
+        <p>In Claude Code, this file is called <code>CLAUDE.md</code>. In Cursor, it's <code>.cursorrules</code>. In Windsurf, it's <code>.windsurfrules</code>. Different wrappers, same concept.</p>
+
+        <h3>What goes in it</h3>
+        <ul>
+          <li><strong>Your role</strong> &mdash; title, responsibilities, what you own</li>
+          <li><strong>Your team</strong> &mdash; names, roles, what each person manages</li>
+          <li><strong>Your priorities</strong> &mdash; what matters this quarter, what's on fire</li>
+          <li><strong>Your tools</strong> &mdash; what systems you use (Slack, Jira, Confluence, etc.)</li>
+          <li><strong>Your conventions</strong> &mdash; how you name files, how you structure documents, how you communicate</li>
+          <li><strong>Routing rules</strong> &mdash; "when I ask about X, look in folder Y first"</li>
+        </ul>
+
+        <h3>Starter template for a 16-person team manager</h3>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>CLAUDE.md</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre># Workspace Context
+
+## Role
+- Title: [Your Title]
+- Team Size: 16 people across [countries/regions]
+- Reports To: [Manager Name, Title]
+- Key Tools: Slack, [Project Tracker], [Meeting Notes Tool]
+
+## Team Structure
+| # | Name       | Role           | Location | Focus Area         |
+|---|------------|----------------|----------|--------------------|
+| 1 | [Name]     | [Role]         | [City]   | [What they own]    |
+| 2 | [Name]     | [Role]         | [City]   | [What they own]    |
+...
+
+## Current Priorities (This Quarter)
+1. [Priority 1 - what and why]
+2. [Priority 2 - what and why]
+3. [Priority 3 - what and why]
+
+## Intelligence Hub
+When answering questions, check `intelligence-hub/` first:
+- Team status questions → `intelligence-hub/team-status/`
+- Decision history → `intelligence-hub/decisions/`
+- Meeting context → `intelligence-hub/meeting-notes/`
+- Slack context → `intelligence-hub/slack-digest/`
+
+## Conventions
+- Documents: UPPER_SNAKE_CASE.md
+- Meeting notes: YYYY-MM-DD_topic.md
+- Status updates: weekly, stored in team-status/</pre>
+        </div>
+
+        <h3>How it grows</h3>
+        <p>Start with 20 lines. Add things as you work. When the AI gets something wrong, add a rule to the brain file so it doesn't happen again. My brain file started at 20 lines. It's now 163 lines of core instructions plus 500+ lines of identity, skills, and routing rules.</p>
+
+        <p>Don't write it by hand if you don't want to. You can paste this into Claude Code:</p>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>prompt</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>Interview me and build a CLAUDE.md brain file for this workspace. Ask me about my role, team structure, priorities, tools, and communication preferences. Build the file section by section.</pre>
+        </div>
+
+        <h3>Skills, hooks, and memory (intermediate)</h3>
+        <p>Once the brain file is working, you can add:</p>
+        <ul>
+          <li><strong>Skills</strong> &mdash; reusable prompts that trigger on keywords. Example: typing "draft email" auto-loads your writing style and communication rules.</li>
+          <li><strong>Hooks</strong> &mdash; scripts that run before or after AI actions. Example: auto-validate every document against your formatting standards.</li>
+          <li><strong>Memory</strong> &mdash; the AI stores corrections between sessions. Tell it "never use passive voice in emails" once, and it remembers for every future session.</li>
+        </ul>
+        <p class="muted">You don't need any of this on day one. The brain file alone gets you 80% of the value.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 4: INTELLIGENCE HUB                                   -->
+      <!-- ============================================================ -->
+      <section id="ch4">
+        <h2><span class="ch-num">Chapter 4</span> The Intelligence Hub</h2>
+
+        <p>This is the concept that ties everything together. A single folder that the AI reads before making any recommendation or decision.</p>
+
+        <div class="formula">
+          <span>intelligence-hub/</span> = your team's ground truth
+        </div>
+
+        <h3>What goes in it</h3>
+        <p>Reference files that represent the current state of your world. Not every email or Slack message &mdash; synthesized summaries that the AI can read quickly.</p>
+
+        <table class="ref-table">
+          <thead><tr><th>File</th><th>What It Contains</th><th>Update Frequency</th></tr></thead>
+          <tbody>
+            <tr><td><code>team-status.md</code></td><td>What each person is working on, blockers, capacity</td><td>Weekly</td></tr>
+            <tr><td><code>decisions.md</code></td><td>Recent decisions, who made them, rationale</td><td>As they happen</td></tr>
+            <tr><td><code>meeting-notes/</code></td><td>Key takeaways from important meetings</td><td>After each meeting</td></tr>
+            <tr><td><code>slack-digest.md</code></td><td>Important threads, decisions made in channels</td><td>Weekly</td></tr>
+            <tr><td><code>priorities.md</code></td><td>This quarter's focus, what's changed</td><td>Monthly</td></tr>
+            <tr><td><code>country-context/</code></td><td>Per-country nuances, regulations, local contacts</td><td>As needed</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Auto-query routing</h3>
+        <p>In your brain file (Chapter 3), you add routing rules that tell the AI which file to read based on the question type. When you ask "what's the team working on?" it goes to <code>team-status.md</code>. When you ask "why did we decide to do X?" it goes to <code>decisions.md</code>.</p>
+
+        <details>
+          <summary>Example routing rule (from my CLAUDE.md)</summary>
+          <div>
+            <div class="prompt-wrap">
+              <div class="prompt-header">
+                <span>CLAUDE.md routing section</span>
+                <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+              </div>
+              <pre>## Intelligence Hub Query Routing
+
+When answering questions, check intelligence-hub/ FIRST:
+
+| Question Type               | Read This File First              |
+|-----------------------------|-----------------------------------|
+| Team capacity / who's free  | intelligence-hub/team-status.md   |
+| Why we decided X            | intelligence-hub/decisions.md     |
+| Meeting follow-ups          | intelligence-hub/meeting-notes/   |
+| Slack threads / context     | intelligence-hub/slack-digest.md  |
+| Country-specific questions  | intelligence-hub/country-context/ |
+| Initiative status           | intelligence-hub/priorities.md    |</pre>
+            </div>
+          </div>
+        </details>
+
+        <h3>Project-level context override</h3>
+        <p>You can also put a smaller brain file inside individual project folders. When you're working inside that project, the AI prioritizes the project-level context over the global one. So a project for "Brazil market expansion" can have its own CLAUDE.md that says "when answering questions in this folder, focus on intelligence-hub/country-context/brazil.md and ignore the global team status."</p>
+
+        <h3>Start with five files</h3>
+        <p>Don't try to build a 39-file intelligence hub on day one. Start with:</p>
+        <ol>
+          <li><code>team-status.md</code> &mdash; one paragraph per person, updated weekly</li>
+          <li><code>decisions.md</code> &mdash; a running log of decisions with dates and rationale</li>
+          <li><code>priorities.md</code> &mdash; this quarter's top 5</li>
+          <li><code>meeting-notes/</code> &mdash; a folder for important meeting summaries</li>
+          <li><code>slack-digest.md</code> &mdash; a weekly summary of important Slack activity</li>
+        </ol>
+        <p>That's it. Five files. The AI now has enough context to give you non-generic answers about your team.</p>
+
+        <h3>NotebookLM as a research engine</h3>
+        <p><a href="https://notebooklm.google.com" target="_blank">NotebookLM</a> (free from Google) is a second layer. Upload your intelligence hub files, meeting transcripts, or any reference material, and it gives you citation-backed answers without consuming your AI's context window. Think of it as a research library the AI can query when it needs deeper context.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 5: CONNECTING TOOLS                                   -->
+      <!-- ============================================================ -->
+      <section id="ch5">
+        <h2><span class="ch-num">Chapter 5</span> Connecting Your Tools</h2>
+
+        <p>Your intelligence hub is only as good as the data flowing into it. This chapter covers how to connect the AI to the tools your team actually uses.</p>
+
+        <h3>What's an MCP</h3>
+        <p>MCP (Model Context Protocol) is an open standard that lets AI models talk to external tools. Think of it as USB for AI &mdash; a universal connector. If a tool has an MCP server, you can plug it into Claude Code and the AI can read from (and sometimes write to) that tool directly.</p>
+
+        <h3>Available MCPs to explore</h3>
+        <table class="ref-table">
+          <thead><tr><th>Tool Category</th><th>MCP Server</th><th>What It Does</th></tr></thead>
+          <tbody>
+            <tr><td>Google Workspace</td><td><code>google-workspace</code></td><td>Read/write Gmail, Calendar, Drive, Sheets, Docs</td></tr>
+            <tr><td>Slack</td><td><code>slack-mcp</code></td><td>Read channels, search messages, post updates</td></tr>
+            <tr><td>Jira / Linear / Asana</td><td>Various</td><td>Read tickets, update status, create issues</td></tr>
+            <tr><td>Meeting transcripts</td><td><code>mcp-limitless</code></td><td>Search Limitless pendant recordings semantically</td></tr>
+            <tr><td>Confluence / Notion</td><td>Various</td><td>Read/write knowledge base pages</td></tr>
+            <tr><td>GitHub</td><td><code>mcp-github</code></td><td>Repos, issues, PRs, code search</td></tr>
+          </tbody>
+        </table>
+
+        <h4>How to add an MCP</h4>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre># Example: add Slack MCP
+claude mcp add slack npx -y @anthropic/slack-mcp
+
+# Example: add Google Workspace
+claude mcp add google-workspace npx -y google-workspace-mcp</pre>
+        </div>
+        <p class="note"><strong>Where to find MCPs:</strong> <a href="https://github.com/modelcontextprotocol/servers" target="_blank">github.com/modelcontextprotocol/servers</a> has the official registry. Search for "[your tool] MCP server" and you'll usually find one.</p>
+
+        <h3>CLI-Anything</h3>
+        <p>Here's the trick that opens everything up: any command-line tool can become an AI capability. If a tool has a CLI, the AI can call it.</p>
+        <ul>
+          <li>Your project tracker has a CLI? The AI can check ticket status.</li>
+          <li>Your company uses a custom deploy tool? The AI can trigger deploys.</li>
+          <li>You use <code>curl</code> to hit internal APIs? The AI can do that too.</li>
+        </ul>
+        <p>You don't need to wait for someone to build an MCP. If it runs in the terminal, Claude Code can run it.</p>
+
+        <h3>Meeting transcripts: Limitless, Otter, Fireflies</h3>
+        <p>I use a <a href="https://limitless.ai" target="_blank">Limitless pendant</a> that records all my meetings and makes them searchable via API. But there are alternatives:</p>
+        <ul>
+          <li><strong>Limitless</strong> &mdash; hardware pendant, always-on recording, API access, semantic search</li>
+          <li><strong>Otter.ai</strong> &mdash; software-based, integrates with Zoom/Teams/Meet</li>
+          <li><strong>Fireflies.ai</strong> &mdash; meeting bot, auto-joins calls, transcribes and summarizes</li>
+          <li><strong>Built-in transcription</strong> &mdash; Teams, Zoom, and Meet all have native transcription now</li>
+        </ul>
+        <p>The pattern is the same regardless of tool: record, transcribe, pull into your intelligence hub, let the AI search and synthesize.</p>
+
+        <h3>Start with one connection</h3>
+        <p>Don't try to connect everything at once. Pick the tool where you lose the most context (usually Slack or meeting notes) and connect that first. Add more as you build the habit.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 6: AUTOMATED INTELLIGENCE                             -->
+      <!-- ============================================================ -->
+      <section id="ch6">
+        <h2><span class="ch-num">Chapter 6</span> Automated Intelligence</h2>
+
+        <p>The intelligence hub is powerful when you update it manually. It becomes a force multiplier when the updates happen automatically.</p>
+
+        <h3>What's a cron job</h3>
+        <p>You know this from undergrad, but the quick version: a cron job is a scheduled task that runs at a set interval. On Mac/Linux, <code>crontab -e</code> opens the scheduler. On Windows, it's Task Scheduler.</p>
+        <p>Claude Code also has a built-in scheduler (<code>CronCreate</code>) that runs tasks within the AI session.</p>
+
+        <h3>Patterns I run</h3>
+        <table class="ref-table">
+          <thead><tr><th>What</th><th>When</th><th>What It Does</th></tr></thead>
+          <tbody>
+            <tr><td>Weekly team status aggregation</td><td>Friday 2pm</td><td>Pulls Slack + meeting notes, synthesizes into team-status.md</td></tr>
+            <tr><td>Decision health report</td><td>Sunday 9am</td><td>Scans decisions.md for stalled items, surfaces them</td></tr>
+            <tr><td>Morning briefing</td><td>Monday 7am</td><td>Generates a digest of what happened over the weekend</td></tr>
+            <tr><td>Initiative status monitor</td><td>Daily 5pm</td><td>Checks if any initiative has gone silent for >5 days</td></tr>
+          </tbody>
+        </table>
+
+        <h3>How to set up a cron job</h3>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre># Open the cron scheduler
+crontab -e
+
+# Add a weekly Friday 2pm job:
+0 14 * * 5 cd ~/work-hub && python3 scripts/weekly_status.py
+
+# Add a daily 5pm check:
+0 17 * * * cd ~/work-hub && python3 scripts/initiative_monitor.py</pre>
+        </div>
+
+        <h3>Starter crons for your situation</h3>
+        <p>With 16 people across multiple countries, I'd start with three:</p>
+        <ol>
+          <li><strong>Weekly team status aggregation</strong> &mdash; Friday afternoon, pull Slack activity per person, update team-status.md</li>
+          <li><strong>Daily decision log</strong> &mdash; End of day, scan for decisions made in meetings/Slack, append to decisions.md</li>
+          <li><strong>Monthly country review</strong> &mdash; First of each month, generate a summary per country from the past 30 days</li>
+        </ol>
+
+        <p class="note"><strong>Building blocks first, automation later.</strong> I used the manual version of all of this for months before automating anything. The automation makes it faster, but the value comes from the structure. Get the folders and brain file working, use it for a few weeks, then start adding crons when you see what's worth automating.</p>
+
+        <h3>Remote triggers</h3>
+        <p>Claude Code can also run scheduled agents via "remote triggers" &mdash; tasks that fire on a cron schedule even when you're not in a session. This is the equivalent of having an AI assistant that checks things while you sleep.</p>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre># Inside Claude Code, create a scheduled task:
+/schedule create --cron "0 14 * * 5" --prompt "Generate the weekly team status report and update intelligence-hub/team-status.md"</pre>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CHAPTER 7: THE WALK-THROUGH                                   -->
+      <!-- ============================================================ -->
+      <section id="ch7">
+        <h2><span class="ch-num">Chapter 7</span> The Walk-Through</h2>
+
+        <p>This is the checklist for our call. We'll go through each step together. Estimated total: about 2 hours.</p>
+
+        <div class="decision-tree">
+          <p><strong>Step 1: Install Claude Code CLI</strong></p>
+          <p>Requires Node.js first. Install from <a href="https://nodejs.org" target="_blank">nodejs.org</a>, then:</p>
+        </div>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>npm install -g @anthropic-ai/claude-code
+claude</pre>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 2: Create your workspace folder + git init</strong></p>
+          <p>Pick a name, create the folder, initialize Git, push to GitHub.</p>
+        </div>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>terminal</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>mkdir ~/work-hub && cd ~/work-hub
+git init
+gh repo create work-hub --private --source=. --push</pre>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 3: Choose your folder structure</strong></p>
+          <p>Pick PARA, Domain-First, or Timeline-First (Chapter 2). Create the folders.</p>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 4: Create your CLAUDE.md brain file</strong></p>
+          <p>Use the template from Chapter 3, or let Claude interview you:</p>
+        </div>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>prompt</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>Interview me and build a CLAUDE.md brain file. I manage 16 people across multiple countries. Ask me about my role, team structure, priorities, tools, and how I want to communicate with you.</pre>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 5: First real conversation &mdash; verify the AI knows you</strong></p>
+          <p>Ask it something that requires context. If it answers generically, the brain file needs more detail.</p>
+        </div>
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>prompt</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>What are the top three things I should focus on this week based on my priorities and team structure?</pre>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 6: Add intelligence hub with 3-5 starter files</strong></p>
+          <p>Create <code>intelligence-hub/</code> with team-status.md, decisions.md, priorities.md. See Chapter 4.</p>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 7: Connect your first MCP</strong></p>
+          <p>Start with whatever tool leaks the most context. Usually Slack or Google Workspace. See Chapter 5.</p>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 8: Set up your first cron</strong></p>
+          <p>A weekly team status aggregation is a good first one. See Chapter 6.</p>
+        </div>
+
+        <div class="decision-tree">
+          <p><strong>Step 9: Iterate</strong></p>
+          <p>Use it for a week. Add rules to the brain file when the AI gets something wrong. Add files to the intelligence hub when you notice gaps. Connect more tools as you see the value. This system compounds &mdash; the more you feed it, the better it gets.</p>
+        </div>
+
+        <h3>Quick reference</h3>
+        <table class="ref-table">
+          <thead><tr><th>Action</th><th>Command</th></tr></thead>
+          <tbody>
+            <tr><td>Start Claude Code</td><td><code>claude</code></td></tr>
+            <tr><td>Save your work</td><td><code>git add -A && git commit -m "message" && git push</code></td></tr>
+            <tr><td>Add an MCP</td><td><code>claude mcp add [name] [command]</code></td></tr>
+            <tr><td>List MCPs</td><td><code>claude mcp list</code></td></tr>
+            <tr><td>Open Claude Code docs</td><td><a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">docs.anthropic.com/en/docs/claude-code</a></td></tr>
+            <tr><td>MCP registry</td><td><a href="https://github.com/modelcontextprotocol/servers" target="_blank">github.com/modelcontextprotocol/servers</a></td></tr>
+            <tr><td>NotebookLM</td><td><a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a></td></tr>
+          </tbody>
+        </table>
+
+        <p class="muted">Pricing changes. Claude Code requires an Anthropic API key or a Claude Max subscription (~$100-200/month depending on plan). Check <a href="https://www.anthropic.com/pricing" target="_blank">anthropic.com/pricing</a> for current rates. NotebookLM is free.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    Made by Hakeem. Private guide &mdash; not for distribution. |
+    <a href="https://hr-ar.github.io/claude-code-brain-file-guide/" target="_blank">Brain File Guide</a> |
+    <a href="https://hr-ar.github.io/rashid-ai-masterclass/" target="_blank">AI Masterclass</a>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // --- Copy Button ---
+    function copyBlock(btn) {
+      const pre = btn.closest('.prompt-wrap').querySelector('pre');
+      if (!pre) return;
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // --- Mobile TOC ---
+    function toggleMobileToc() {
+      const sidebar = document.getElementById('tocSidebar');
+      const overlay = document.getElementById('mobileTocOverlay');
+      sidebar.classList.toggle('mobile-open');
+      overlay.classList.toggle('open');
+    }
+
+    // Close mobile TOC when clicking a link
+    document.getElementById('tocNav').addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        const sidebar = document.getElementById('tocSidebar');
+        const overlay = document.getElementById('mobileTocOverlay');
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('open');
+      }
+    });
+
+    // --- TOC Active State ---
+    const tocLinks = document.querySelectorAll('#tocNav a');
+    const sections = document.querySelectorAll('section[id]');
+
+    function updateTocActive() {
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 120;
+        if (window.scrollY >= top) current = section.id;
+      });
+      tocLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateTocActive, { passive: true });
+    updateTocActive();
+  </script>
+</body>
+</html>
