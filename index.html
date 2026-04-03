@@ -731,7 +731,50 @@ claude mcp add google-workspace npx -y google-workspace-mcp</pre>
         <p class="note"><strong>Where to find MCPs:</strong> <a href="https://github.com/modelcontextprotocol/servers" target="_blank">github.com/modelcontextprotocol/servers</a> has the official registry. Search for "[your tool] MCP server" and you'll usually find one.</p>
 
         <h3>CLI-Anything</h3>
-        <p>No MCP? If it has a CLI, Claude Code can run it. Project tracker CLI, deploy tools, <code>curl</code> to internal APIs &mdash; all work.</p>
+        <p>No MCP exists for your tool? Doesn't matter. Claude Code runs in a terminal. If a tool has a CLI, the AI can call it directly &mdash; no MCP wrapper needed. This is the escape hatch that makes the system work for any stack.</p>
+
+        <h4>How it works</h4>
+        <p>Claude Code has access to your shell. When you describe what you want, it writes and executes the CLI commands for you. You can also teach it reusable patterns by adding them to your brain file or creating a <strong>skill</strong> (a reusable prompt template that fires on keywords).</p>
+
+        <h4>Examples</h4>
+        <table class="ref-table">
+          <thead><tr><th>Tool</th><th>CLI Command the AI Runs</th><th>What It Does for You</th></tr></thead>
+          <tbody>
+            <tr><td>Jira</td><td><code>jira issue list --project TEAM --status "In Progress"</code></td><td>Pulls active tickets into your intelligence hub</td></tr>
+            <tr><td>Slack</td><td><code>curl -H "Authorization: Bearer $TOKEN" https://slack.com/api/conversations.history</code></td><td>Reads channel messages, feeds into slack-digest.md</td></tr>
+            <tr><td>AWS</td><td><code>aws cloudwatch get-metric-data ...</code></td><td>Pulls system metrics for incident reports</td></tr>
+            <tr><td>Internal API</td><td><code>curl https://internal.company.com/api/team-status</code></td><td>Fetches live team data, updates team-status.md</td></tr>
+            <tr><td>GitHub</td><td><code>gh pr list --repo your-org/repo --state open</code></td><td>Tracks open PRs across your team's repos</td></tr>
+            <tr><td>kubectl</td><td><code>kubectl get pods -n production</code></td><td>Checks deployment status for incident triage</td></tr>
+          </tbody>
+        </table>
+
+        <h4>Best way to use it</h4>
+        <ol>
+          <li><strong>Start manual</strong> &mdash; run the CLI command yourself first. Make sure it returns what you need.</li>
+          <li><strong>Teach the AI</strong> &mdash; add the command pattern to your brain file: "When I ask about team tickets, run <code>jira issue list --project TEAM</code> and summarize the output."</li>
+          <li><strong>Automate it</strong> &mdash; wrap it in a cron job (Chapter 6) that writes the output to your intelligence hub on a schedule.</li>
+        </ol>
+
+        <div class="prompt-wrap">
+          <div class="prompt-header">
+            <span>CLAUDE.md rule example</span>
+            <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+          </div>
+          <pre>## CLI Tools Available
+When I ask about active tickets, run:
+  jira issue list --project TEAM --status "In Progress" -o json
+
+When I ask about Slack activity, run:
+  python3 scripts/slack-digest.py --channel general --days 7
+
+When I ask about deployment status, run:
+  kubectl get deployments -n production -o wide
+
+Always summarize the output and update the relevant intelligence-hub file.</pre>
+        </div>
+
+        <p class="note"><strong>The power move:</strong> combine CLI-anything with cron jobs. A script that runs <code>jira issue list</code> + <code>slack-digest.py</code> every Friday, writes the results to your intelligence hub, and your AI reads it Monday morning. You walk in knowing what your 16 people did last week without asking anyone.</p>
 
         <h3>Meeting transcripts</h3>
         <ul>
